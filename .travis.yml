@@ -1,1 +1,3 @@
-language: c++
+language: cpp
+#Change to make
+script:  true
