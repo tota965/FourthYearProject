@@ -1,6 +1,8 @@
-Microsoft Visual Studio Solution File, Format Version 11.00
-# Visual Studio 2013
-Project("{9D8B703E-13FF-EB71-784C-D435A8F538D6}") = "DAWTest", "DAWTest.vcxproj", "{4624ECD4-5A57-0E20-841D-278DEC394001}"
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.24720.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DAWTest", "DAWTest.vcxproj", "{4624ECD4-5A57-0E20-841D-278DEC394001}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<JUCERPROJECT id="HHjl21" name="DAWTest" projectType="audioplug" version="1.0.0"
+              bundleIdentifier="com.mlo_jfree.DAWTest" includeBinaryInAppConfig="1"
+              buildVST="1" buildVST3="0" buildAU="1" buildRTAS="0" buildAAX="0"
+              pluginName="DAWTest" pluginDesc="DAWTest" pluginManufacturer="mlo_jfree"
+              pluginManufacturerCode="Manu" pluginCode="Plug" pluginChannelConfigs="{1, 1}, {2, 2}"
+              pluginIsSynth="0" pluginWantsMidiIn="1" pluginProducesMidiOut="1"
+              pluginSilenceInIsSilenceOut="0" pluginEditorRequiresKeys="0"
+              pluginAUExportPrefix="DAWTestAU" pluginRTASCategory="" aaxIdentifier="com.mlo_jfree.DAWTest"
+              pluginAAXCategory="AAX_ePlugInCategory_Dynamics" jucerVersion="3.2.0">
+  <MAINGROUP id="wqcw6L" name="DAWTest">
+    <GROUP id="{312F914C-D2B9-28ED-6C75-27A6EF5FB90D}" name="Source">
+      <GROUP id="{9A3812E0-D5F5-50AC-AA93-DECBC129F46F}" name="Analysis">
+        <FILE id="MihTdO" name="BrainController.cpp" compile="1" resource="0"
+              file="Source/Analysis/BrainController.cpp"/>
+        <FILE id="An6zlY" name="BrainController.h" compile="0" resource="0"
+              file="Source/Analysis/BrainController.h"/>
+        <FILE id="uZ9drx" name="SenseMaker.cpp" compile="1" resource="0" file="Source/Analysis/SenseMaker.cpp"/>
+        <FILE id="mBloIA" name="SenseMaker.h" compile="0" resource="0" file="Source/Analysis/SenseMaker.h"/>
+        <FILE id="g1gWxO" name="Markov.cpp" compile="1" resource="0" file="Source/Analysis/Markov.cpp"/>
+        <FILE id="tpN8mW" name="Markov.h" compile="0" resource="0" file="Source/Analysis/Markov.h"/>
+      </GROUP>
+      <FILE id="TTxG9h" name="Logging.h" compile="0" resource="0" file="Source/Logging.h"/>
+      <GROUP id="{EC824676-9CE1-4323-D469-72C8F3D05FDB}" name="Input">
+        <FILE id="hToCi4" name="InputProcessor.cpp" compile="1" resource="0"
+              file="Source/Input/InputProcessor.cpp"/>
+        <FILE id="X1u9Y1" name="InputProcessor.h" compile="0" resource="0"
+              file="Source/Input/InputProcessor.h"/>
+      </GROUP>
+      <GROUP id="{74C960F8-2FF2-605B-EE56-375A861ED758}" name="Output">
+        <FILE id="kKrHqW" name="OutputController.cpp" compile="1" resource="0"
+              file="Source/Output/OutputController.cpp"/>
+        <FILE id="Vr2S7b" name="OutputController.h" compile="0" resource="0"
+              file="Source/Output/OutputController.h"/>
+      </GROUP>
+      <FILE id="vBsLzY" name="PluginProcessor.cpp" compile="1" resource="0"
+            file="Source/PluginProcessor.cpp"/>
+      <FILE id="NoUGFI" name="PluginProcessor.h" compile="0" resource="0"
+            file="Source/PluginProcessor.h"/>
+      <FILE id="ucXCvh" name="PluginEditor.cpp" compile="1" resource="0"
+            file="Source/PluginEditor.cpp"/>
+      <FILE id="vb3JNK" name="PluginEditor.h" compile="0" resource="0" file="Source/PluginEditor.h"/>
+    </GROUP>
+  </MAINGROUP>
+  <EXPORTFORMATS>
+    <VS2013 targetFolder="Builds/VisualStudio2013" vstFolder="..\VST3 SDK">
+      <CONFIGURATIONS>
+        <CONFIGURATION name="Debug" winWarningLevel="4" generateManifest="1" winArchitecture="32-bit"
+                       isDebug="1" optimisation="1" targetName="DAWTest" headerPath="..\..\Source\StereoWidthCtrl; ..\..\Source\ChangeVolume; ..\..\Source\Output\OutputController;"/>
+        <CONFIGURATION name="Release" winWarningLevel="4" generateManifest="1" winArchitecture="32-bit"
+                       isDebug="0" optimisation="3" targetName="DAWTest" headerPath="..\..\Source\StereoWidthCtrl; ..\..\Source\ChangeVolume; ..\..\Source\Output\OutputController;"/>
+      </CONFIGURATIONS>
+      <MODULEPATHS>
+        <MODULEPATH id="juce_core" path="../JUCE-LINUX/modules"/>
+        <MODULEPATH id="juce_events" path="../JUCE-LINUX/modules"/>
+        <MODULEPATH id="juce_graphics" path="../JUCE-LINUX/modules"/>
+        <MODULEPATH id="juce_data_structures" path="../JUCE-LINUX/modules"/>
+        <MODULEPATH id="juce_gui_basics" path="../JUCE-LINUX/modules"/>
+        <MODULEPATH id="juce_gui_extra" path="../JUCE-LINUX/modules"/>
+        <MODULEPATH id="juce_cryptography" path="../JUCE-LINUX/modules"/>
+        <MODULEPATH id="juce_video" path="../JUCE-LINUX/modules"/>
+        <MODULEPATH id="juce_opengl" path="../JUCE-LINUX/modules"/>
+        <MODULEPATH id="juce_audio_basics" path="../JUCE-LINUX/modules"/>
+        <MODULEPATH id="juce_audio_devices" path="../JUCE-LINUX/modules"/>
+        <MODULEPATH id="juce_audio_formats" path="../JUCE-LINUX/modules"/>
+        <MODULEPATH id="juce_audio_processors" path="../JUCE-LINUX/modules"/>
+        <MODULEPATH id="juce_audio_plugin_client" path="../JUCE-LINUX/modules"/>
+      </MODULEPATHS>
+    </VS2013>
+    <LINUX_MAKE targetFolder="Builds/Linux" vstFolder="../VST3 SDK">
+      <CONFIGURATIONS>
+        <CONFIGURATION name="Debug" libraryPath="/usr/X11R6/lib/" isDebug="1" optimisation="1"
+                       targetName="DAWTest" headerPath="..\..\Source\StereoWidthCtrl; ..\..\Source\ChangeVolume; ..\..\Source\Output\OutputController;"/>
+        <CONFIGURATION name="Release" libraryPath="/usr/X11R6/lib/" isDebug="0" optimisation="3"
+                       targetName="DAWTest" headerPath="..\..\Source\StereoWidthCtrl; ..\..\Source\ChangeVolume; ..\..\Source\Output\OutputController;"/>
+      </CONFIGURATIONS>
+      <MODULEPATHS>
+        <MODULEPATH id="juce_video" path="../JUCE-LINUX/modules"/>
+        <MODULEPATH id="juce_opengl" path="../JUCE-LINUX/modules"/>
+        <MODULEPATH id="juce_gui_extra" path="../JUCE-LINUX/modules"/>
+        <MODULEPATH id="juce_gui_basics" path="../JUCE-LINUX/modules"/>
+        <MODULEPATH id="juce_graphics" path="../JUCE-LINUX/modules"/>
+        <MODULEPATH id="juce_events" path="../JUCE-LINUX/modules"/>
+        <MODULEPATH id="juce_data_structures" path="../JUCE-LINUX/modules"/>
+        <MODULEPATH id="juce_cryptography" path="../JUCE-LINUX/modules"/>
+        <MODULEPATH id="juce_core" path="../JUCE-LINUX/modules"/>
+        <MODULEPATH id="juce_audio_processors" path="../JUCE-LINUX/modules"/>
+        <MODULEPATH id="juce_audio_plugin_client" path="../JUCE-LINUX/modules"/>
+        <MODULEPATH id="juce_audio_formats" path="../JUCE-LINUX/modules"/>
+        <MODULEPATH id="juce_audio_devices" path="../JUCE-LINUX/modules"/>
+        <MODULEPATH id="juce_audio_basics" path="../JUCE-LINUX/modules"/>
+      </MODULEPATHS>
+    </LINUX_MAKE>
+  </EXPORTFORMATS>
+  <MODULES>
+    <MODULES id="juce_audio_basics" showAllCode="1" useLocalCopy="0"/>
+    <MODULES id="juce_audio_devices" showAllCode="1" useLocalCopy="0"/>
+    <MODULES id="juce_audio_formats" showAllCode="1" useLocalCopy="0"/>
+    <MODULES id="juce_audio_plugin_client" showAllCode="1" useLocalCopy="0"/>
+    <MODULES id="juce_audio_processors" showAllCode="1" useLocalCopy="0"/>
+    <MODULES id="juce_core" showAllCode="1" useLocalCopy="0"/>
+    <MODULES id="juce_cryptography" showAllCode="1" useLocalCopy="0"/>
+    <MODULES id="juce_data_structures" showAllCode="1" useLocalCopy="0"/>
+    <MODULES id="juce_events" showAllCode="1" useLocalCopy="0"/>
+    <MODULES id="juce_graphics" showAllCode="1" useLocalCopy="0"/>
+    <MODULES id="juce_gui_basics" showAllCode="1" useLocalCopy="0"/>
+    <MODULES id="juce_gui_extra" showAllCode="1" useLocalCopy="0"/>
+    <MODULES id="juce_opengl" showAllCode="1" useLocalCopy="0"/>
+    <MODULES id="juce_video" showAllCode="1" useLocalCopy="0"/>
+  </MODULES>
+  <JUCEOPTIONS JUCE_QUICKTIME="disabled"/>
+</JUCERPROJECT>
