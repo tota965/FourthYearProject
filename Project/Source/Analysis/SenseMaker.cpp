@@ -101,7 +101,7 @@ int SenseMaker::frequencyToNoteInKey(double freq)
 	
 	int currentSteps = 0;
 
-	if (freq > currentKeyTonic)
+	/*if (freq > currentKeyTonic)
 	{
 		double multiplier = aValue;
 
@@ -113,35 +113,58 @@ int SenseMaker::frequencyToNoteInKey(double freq)
 		currentSteps = currentSteps % 12;
 	}
 	else
-	{
-		double multiplier = 1/aValue;
-		while ((currentKeyTonic* multiplier) > freq){
+	{*/
+		double multiplier = aValue;
+		double fn = freq / currentKeyTonic;
+		double logValue1 = log10(fn);
+		double logValue2 = log10(aValue);
+
+		currentSteps = logValue1 / logValue2;
+		/*while ((currentKeyTonic* multiplier) > freq){
 			currentSteps--;
 			multiplier *= 1/aValue;
+		}*/
+		if (currentSteps > 0) {
+			currentSteps++;
+			currentSteps = currentSteps % 12;
 		}
-		currentSteps = currentSteps % -12;
+		else {
+			currentSteps--;
+			currentSteps = currentSteps % -12;
+
+		}
 		currentSteps = currentSteps + 12;
-	}
+	//}
 
 	//It is in the scale if it is 0, 2, 4, 5, 7, 9, 11, 12(0)
 	switch (currentSteps)
 	{
 		case 0:
-			return 1;
+			return 10;
+		case 1:
+			return 11;
 		case 2:
-			return 2;
+			return 12;
+		case 3:
+			return 1;
 		case 4:
-			return 3;
+			return 2;
 		case 5:
+			return 3;
+		case 6:
 			return 4;
 		case 7:
 			return 5;
-		case 9:
+		case 8:
 			return 6;
-		case 11:
+		case 9:
 			return 7;
+		case 10:
+			return 8;
+		case 11:
+			return 9;
 		case 12:
-			return 1;
+			return 10;
 		default:
 			//Note: not in scale if return 0
 			return 0;
