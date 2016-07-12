@@ -64,6 +64,7 @@ Markov::~Markov(){}
 
 // Given the last note heard from the musician, determine which note the computer should play next.
 int Markov::getNextNote(int currentNote) {
+
 	std::vector<double> workingRow = note->operator[](currentNote-1);
 
 	// Random number between 0 and 1.

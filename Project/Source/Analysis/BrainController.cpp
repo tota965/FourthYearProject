@@ -128,9 +128,15 @@ double BrainController::clockTickFrequency(double currentFreq, bool isBeatTick, 
 			previousNotePlayed = noteToPlay;
 		}*/
 	}
-
+	if (previousNotePlayed <= 0) {
+		previousNotePlayed = 1;
+	}
+	else if (previousNotePlayed > 8) {
+		previousNotePlayed = 8;
+	}
 	noteToPlay = mMarkov.getNextNote(previousNotePlayed);
 	previousNotePlayed = noteToPlay;
+	
 	int noteInKey = convertNoteFromChordToKey(noteToPlay, currentChord);
 
 	return mSenseMaker.noteInKeytoFrequency(noteInKey);
