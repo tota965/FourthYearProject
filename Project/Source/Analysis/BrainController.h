@@ -16,6 +16,8 @@
 #define BRAINCONTROLLER_H_INCLUDED
 #include "SenseMaker.h"
 #include "Markov.h"
+#include "DatabaseReader.h"
+#include "KeyDetermination.h"
 #include <list>
 #include <vector>
 
@@ -50,9 +52,26 @@ private:
 
 	SenseMaker mSenseMaker;
 	Markov mMarkov;
+	DatabaseReader mDatabaseReader;
+	KeyDetermination mKeyDetermination;
 	std::list<int> notesHeardSinceLastChord;
 	std::list<int> chordsHeardSinceLastKey;
 	std::vector<int> convertChordToList(int currentKey);
+	std::vector<double> allFreqHeard;
+
+	bool doesNoteBelong(int note);
+	bool doesChordBelong(int chord);
+
+	std::list<int> chordsNoteMayBelongTo(int note);
+	int convertNoteFromChordToKey(int note, int chord);
+	int convertNoteFromKeyToChord(int note, int chord);
+	int pickNewChord(int currentNote, int currentChord);
+
+	double currentKeyTonic;
+	int currentChord;
+	int previousNotePlayed;
+	bool newChord;
+	int noteCounter;
 
 	std::vector<int> C;
 	std::vector<int> DbCs;
@@ -66,20 +85,6 @@ private:
 	std::vector<int> A;
 	std::vector<int> BbAs;
 	std::vector<int> BCb;
-
-	bool doesNoteBelong(int note);
-	bool doesChordBelong(int chord);
-
-	std::list<int> chordsNoteMayBelongTo(int note);
-	int convertNoteFromChordToKey(int note, int chord);
-	int convertNoteFromKeyToChord(int note, int chord);
-	int pickNewChord(int currentNote, int currentChord);
-	int pickNewKey();
-
-	double currentKeyTonic;
-	int currentChord;
-	int previousNotePlayed;
-	bool newChord;
 
 	int beatCounter;
 	int beatSkip;

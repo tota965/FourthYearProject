@@ -23,7 +23,10 @@ BrainController::BrainController()
 	newChord = true;
 	previousNotePlayed = 1;
 	beatCounter = 0;
+	noteCounter = 0;
 
+
+	//Note scales
 	C = { 1, 3, 5, 6, 8, 10, 12 };
 	DbCs = { 2,4,6,7,9,11,1 };
 	D = { 3,5,7,8,10,11,2 };
@@ -48,31 +51,33 @@ double BrainController::clockTickFrequency(double currentFreq, bool isBeatTick, 
 		if (!isBeatTick){ return 0; }
 		trackStarted = true;
 	}
+
+	if (allFreqHeard.size() >= 4) {
+		allFreqHeard.erase(allFreqHeard.begin());
+	}
+	
+	allFreqHeard.push_back(currentFreq);
+		
 	if (currentChord != 0) {
 		if (!(std::find(chordsHeardSinceLastKey.begin(), chordsHeardSinceLastKey.end(), currentChord) != chordsHeardSinceLastKey.end())) {
 			chordsHeardSinceLastKey.push_back(currentChord);
 		}
 	}
 
+	if (chordsHeardSinceLastKey.size() <= 3) {
+		key = mKeyDetermination.pickNewKeyMajor(chordsHeardSinceLastKey);
+		if (key != -1) {
+			currentKeyTonic = mSenseMaker.setKeyTonic(key);
+		}
+	}
+	noteCounter++;
 	int thisNote = mSenseMaker.frequencyToNoteInKey(currentFreq);
 	if (thisNote != 0) {
 		previousNotePlayed = thisNote;
 		if (!(std::find(notesHeardSinceLastChord.begin(), notesHeardSinceLastChord.end(), thisNote) != notesHeardSinceLastChord.end())) {
 			notesHeardSinceLastChord.push_back(thisNote);
-
-			if (notesHeardSinceLastChord.size() < 4) {
-				return mSenseMaker.noteInKeytoFrequency(thisNote);
-			}
-			else {
-				key = pickNewKey();
-				currentKeyTonic = mSenseMaker.setKeyTonic(key);
-			}
 		}
 	}
-
-	//key = pickNewKey();
-	//currentKeyTonic = mSenseMaker.setKeyTonic(key);
-	//int currentNote = mSenseMaker.frequencyToNoteInKey(currentFreq);
 
 	if (isBeatTick && (beatSkip != 0))
 	{
@@ -84,13 +89,11 @@ double BrainController::clockTickFrequency(double currentFreq, bool isBeatTick, 
 		beatCounter = 0;
 	}
 
-	//notesHeardSinceLastChord.push_back(currentNote);
 
 	int noteToPlay = 0;
 	if (newChord)
 	{
 		noteToPlay = 1;
-		//previousNotePlayed = 1;
 		newChord = false;
 	}
 	else {
@@ -98,35 +101,21 @@ double BrainController::clockTickFrequency(double currentFreq, bool isBeatTick, 
 		if (!doesNoteBelong(thisNote))
 		{
 			currentChord = pickNewChord(thisNote, currentChord);
-			if (!(std::find(chordsHeardSinceLastKey.begin(), chordsHeardSinceLastKey.end(), currentChord) != chordsHeardSinceLastKey.end())) {
-				//if (chordsHeardSinceLastKey.size() < 7 && currentChord != 0) {
-					chordsHeardSinceLastKey.push_back(currentChord);
-					/*key = pickNewKey();
-					if (key == 0) {
-						chordsHeardSinceLastKey.clear();
-						chordsHeardSinceLastKey.push_back(currentChord);
-						key = pickNewKey();
-					}
-					currentKeyTonic = mSenseMaker.setKeyTonic(key);*/
 
-				//}
-				//else {
-					//chordsHeardSinceLastKey.clear();
-					//chordsHeardSinceLastKey.push_back(currentChord);
-					//key = pickNewKey();
-					//currentKeyTonic = mSenseMaker.setKeyTonic(key);
-				//}
+			if (!(std::find(chordsHeardSinceLastKey.begin(), chordsHeardSinceLastKey.end(), currentChord) != chordsHeardSinceLastKey.end())) {
+				if (currentChord != 0) {
+					chordsHeardSinceLastKey.push_back(currentChord);
+				}
+					chordsHeardSinceLastKey.push_back(currentChord);
+					if (chordsHeardSinceLastKey.size() > 3) {
+						key = mKeyDetermination.pickNewKey(chordsHeardSinceLastKey);
+						currentKeyTonic = mSenseMaker.setKeyTonic(key);
+					}
+					
 			}
 
-			//noteToPlay = 1;
-			//previousNotePlayed = 1;
-			//notesHeardSinceLastChord.clear();
-			//notesHeardSinceLastChord.push_back(currentNote);
 		}
-		/*else{
-			noteToPlay = mMarkov.getNextNote(previousNotePlayed);
-			previousNotePlayed = noteToPlay;
-		}*/
+
 	}
 	if (previousNotePlayed <= 0) {
 		previousNotePlayed = 1;
@@ -139,7 +128,20 @@ double BrainController::clockTickFrequency(double currentFreq, bool isBeatTick, 
 	
 	int noteInKey = convertNoteFromChordToKey(noteToPlay, currentChord);
 
-	return mSenseMaker.noteInKeytoFrequency(noteInKey);
+	bool foundSong = false;
+
+	double temp = mDatabaseReader.compareArrayToSongs(allFreqHeard);
+	if (temp >= 0) {
+		foundSong = true;
+	}
+	
+	if (foundSong) {
+		return temp;
+	}
+	else {
+		return mSenseMaker.noteInKeytoFrequency(noteInKey);
+
+	}
 }
 
 int BrainController::convertNoteFromChordToKey(int note, int chord)
@@ -157,156 +159,7 @@ int BrainController::convertNoteFromKeyToChord(int note, int chord)
 }
 
 //returns the first key that it matches with order of preference C, Db/C#, D, Eb/D#, E, F, Gb/F3, G, Ab/G#, A, Bb/A#, B/Cb
-int BrainController::pickNewKey() {
 
-	int newKey = 0;
-	int currentMax = 0;
-
-	//checking if current chords match C key
-	int C_count = 0;
-	for (std::list<int>::iterator it = notesHeardSinceLastChord.begin(); it != notesHeardSinceLastChord.end(); ++it) {
-		if ((std::find(C.begin(), C.end(), *it) != C.end())) {
-			C_count++;
-		}
-	}
-
-	newKey = 1;
-	currentMax = C_count;
-	//checking if current chords match Db or C# keys
-	int DbCs_count = 0;
-	for (std::list<int>::iterator it = notesHeardSinceLastChord.begin(); it != notesHeardSinceLastChord.end(); ++it) {
-		if ((std::find(DbCs.begin(), DbCs.end(), *it) != DbCs.end())) {
-			DbCs_count++;
-		}
-	}
-	if (DbCs_count > currentMax) {
-		currentMax = DbCs_count;
-		newKey = 2;
-	}
-	
-	//checking if current chords match D key 
-	int D_count = 0;
-	for (std::list<int>::iterator it = notesHeardSinceLastChord.begin(); it != notesHeardSinceLastChord.end(); ++it) {
-		if (!(std::find(D.begin(), D.end(), *it) != D.end())) {
-			D_count++;
-		}
-	}
-	if (D_count > currentMax) {
-		currentMax = D_count;
-		newKey = 3;
-	}
-
-	//checking if current chords match Eb or D# keys
-	int EbDs_count = 0;
-	for (std::list<int>::iterator it = notesHeardSinceLastChord.begin(); it != notesHeardSinceLastChord.end(); ++it) {
-		if (!(std::find(EbDs.begin(), EbDs.end(), *it) != EbDs.end())) {
-			EbDs_count++;
-		}
-	}
-	if (EbDs_count > currentMax) {
-		currentMax = EbDs_count;
-		newKey = 4;
-	}
-
-	//checking if current chords match E key
-	int E_count = 0;
-	for (std::list<int>::iterator it = notesHeardSinceLastChord.begin(); it != notesHeardSinceLastChord.end(); ++it) {
-		if (!(std::find(E.begin(), E.end(), *it) != E.end())) {
-			E_count++;
-		}
-	}
-	if (E_count > currentMax) {
-		currentMax = E_count;
-		newKey = 5;
-	}
-
-	//checking if current chords match F key
-	int F_count = 0;
-	for (std::list<int>::iterator it = notesHeardSinceLastChord.begin(); it != notesHeardSinceLastChord.end(); ++it) {
-		if (!(std::find(F.begin(), F.end(), *it) != F.end())) {
-			F_count++;
-		}
-	}
-	if (F_count > currentMax) {
-		currentMax = F_count;
-		newKey = 6;
-	}
-
-	//checking if current chords match Gb or F# keys
-	int GbFs_count = 0;
-	for (std::list<int>::iterator it = notesHeardSinceLastChord.begin(); it != notesHeardSinceLastChord.end(); ++it) {
-		if (!(std::find(GbFs.begin(), GbFs.end(), *it) != GbFs.end())) {
-			GbFs_count++;
-		}
-	}
-	if (GbFs_count > currentMax) {
-		currentMax = GbFs_count;
-		newKey = 7;
-	}
-
-
-	//checking if current chords match G key
-	int G_count = 0;
-	for (std::list<int>::iterator it = notesHeardSinceLastChord.begin(); it != notesHeardSinceLastChord.end(); ++it) {
-		if (!(std::find(G.begin(), G.end(), *it) != G.end())) {
-			G_count++;
-		}
-	}
-	if (G_count > currentMax) {
-		currentMax = G_count;
-		newKey = 8;
-	}
-
-	//checking if current chords match Ab or G# keys
-	int AbGs_count = 0;
-	for (std::list<int>::iterator it = notesHeardSinceLastChord.begin(); it != notesHeardSinceLastChord.end(); ++it) {
-		if (!(std::find(AbGs.begin(), AbGs.end(), *it) != AbGs.end())) {
-			AbGs_count++;
-		}
-	}
-	if (AbGs_count > currentMax) {
-		currentMax = AbGs_count;
-		newKey = 9;
-	}
-
-	//checking if current chords match A key
-	int A_count = 0;
-	for (std::list<int>::iterator it = notesHeardSinceLastChord.begin(); it != notesHeardSinceLastChord.end(); ++it) {
-		if (!(std::find(A.begin(), A.end(), *it) != A.end())) {
-			A_count++;
-		}
-	}
-	if (A_count > currentMax) {
-		currentMax = A_count;
-		newKey = 10;
-	}
-
-	//checking if current chords match Bb or A# keys
-	int BbAs_count = 0;
-	for (std::list<int>::iterator it = notesHeardSinceLastChord.begin(); it != notesHeardSinceLastChord.end(); ++it) {
-		if (!(std::find(BbAs.begin(), BbAs.end(), *it) != BbAs.end())) {
-			BbAs_count++;
-		}
-	}
-	if (BbAs_count > currentMax) {
-		currentMax = BbAs_count;
-		newKey = 11;
-	}
-
-	//checking if current chords match B or Cb keys
-	int BCb_count = 0;
-	for (std::list<int>::iterator it = notesHeardSinceLastChord.begin(); it != notesHeardSinceLastChord.end(); ++it) {
-		if (!(std::find(BCb.begin(), BCb.end(), *it) != BCb.end())) {
-			BCb_count++;
-		}
-	}
-	if (BCb_count > currentMax) {
-		currentMax = BCb_count;
-		newKey = 12;
-	}
-	
-	return newKey;
-}
 
 // When a note is heard that is not in the current chord, this function is used to choose the new chord.
 int BrainController::pickNewChord(int currentNote, int currentChordTransitionFrom)
