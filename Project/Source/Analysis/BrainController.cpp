@@ -65,7 +65,7 @@ double BrainController::clockTickFrequency(double currentFreq, bool isBeatTick, 
 	}
 
 	if (chordsHeardSinceLastKey.size() <= 3) {
-		key = mKeyDetermination.pickNewKeyMajor(chordsHeardSinceLastKey);
+		key = mKeyDecider.pickNewKeyMajor(chordsHeardSinceLastKey);
 		if (key != -1) {
 			currentKeyTonic = mSenseMaker.setKeyTonic(key);
 		}
@@ -108,7 +108,7 @@ double BrainController::clockTickFrequency(double currentFreq, bool isBeatTick, 
 				}
 					chordsHeardSinceLastKey.push_back(currentChord);
 					if (chordsHeardSinceLastKey.size() > 3) {
-						key = mKeyDetermination.pickNewKey(chordsHeardSinceLastKey);
+						key = mKeyDecider.pickNewKey(chordsHeardSinceLastKey);
 						currentKeyTonic = mSenseMaker.setKeyTonic(key);
 					}
 					
@@ -157,9 +157,6 @@ int BrainController::convertNoteFromKeyToChord(int note, int chord)
 	if (noteInChord > 7){ noteInChord -= 7; }
 	return noteInChord;
 }
-
-//returns the first key that it matches with order of preference C, Db/C#, D, Eb/D#, E, F, Gb/F3, G, Ab/G#, A, Bb/A#, B/Cb
-
 
 // When a note is heard that is not in the current chord, this function is used to choose the new chord.
 int BrainController::pickNewChord(int currentNote, int currentChordTransitionFrom)

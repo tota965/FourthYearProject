@@ -17,7 +17,7 @@
 #include "SenseMaker.h"
 #include "Markov.h"
 #include "DatabaseReader.h"
-#include "KeyDetermination.h"
+#include "KeyDecider.h"
 #include <list>
 #include <vector>
 
@@ -53,7 +53,7 @@ private:
 	SenseMaker mSenseMaker;
 	Markov mMarkov;
 	DatabaseReader mDatabaseReader;
-	KeyDetermination mKeyDetermination;
+	KeyDecider mKeyDecider;
 	std::list<int> notesHeardSinceLastChord;
 	std::list<int> chordsHeardSinceLastKey;
 	std::vector<int> convertChordToList(int currentKey);

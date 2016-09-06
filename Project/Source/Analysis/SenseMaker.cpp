@@ -101,29 +101,13 @@ int SenseMaker::frequencyToNoteInKey(double freq)
 	
 	int currentSteps = 0;
 
-	/*if (freq > currentKeyTonic)
-	{
-		double multiplier = aValue;
-
-		while ((currentKeyTonic * multiplier) < freq )
-		{
-			currentSteps++;
-			multiplier *= aValue;
-		}
-		currentSteps = currentSteps % 12;
-	}
-	else
-	{*/
 		double multiplier = aValue;
 		double fn = freq / currentKeyTonic;
 		double logValue1 = log10(fn);
 		double logValue2 = log10(aValue);
 
 		currentSteps = logValue1 / logValue2;
-		/*while ((currentKeyTonic* multiplier) > freq){
-			currentSteps--;
-			multiplier *= 1/aValue;
-		}*/
+
 		if (currentSteps > 0) {
 			currentSteps++;
 			currentSteps = currentSteps % 12;

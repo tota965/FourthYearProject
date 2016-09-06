@@ -1,3 +1,15 @@
+/*
+==============================================================================
+
+DatabaseReader.cpp
+Author:  Toni
+
+Takes the last 4 notes playes and uses a pattern matching algorithm to check to see whether the current input is in a repeating segment.
+Returns either the next note to play, or -1.
+
+==============================================================================
+*/
+
 #include "DatabaseReader.h"
 #include <fstream>
 #include <string>
@@ -9,7 +21,7 @@ DatabaseReader::DatabaseReader() {
 
 	//vector<vector<double>> data;
 	std::ifstream songs;
-	songs.open("H:\\test.txt");
+	songs.open("H:\\noteFrequencies.txt");
 	while (songs) {
 		string s;
 		if (!getline(songs, s)) break;
